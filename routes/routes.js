@@ -111,6 +111,17 @@ router.patch('/update/:id', async (req, res) => {
     }
    })
    
+//Autenticacao
+var jwt = require('jsonwebtoken');
+router.post('/login', (req, res, next) => {
+ if (req.body.nome === 'branqs' && req.body.senha === '1234') {
+ const token = jwt.sign({ id: req.body.nome }, 'segredo', { expiresIn: 300 });
+ return res.json({ auth: true, token: token });
+ }
+ res.status(500).json({ message: 'Login invalido!' });
+})
+
+//Nova forma de Autorizacao
 function verificaJWT(req, res, next) {
     const token = req.headers['id-token'];
     if (!token) return res.status(401).json({
@@ -122,3 +133,4 @@ function verificaJWT(req, res, next) {
     });
    }
    
+    
