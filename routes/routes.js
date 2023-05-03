@@ -35,7 +35,7 @@ router.get('/getAll', verificaJWT, async (req, res) => {
     }
    })
 
-router.get('/getParteDaDescricao/:teste', async (req, res) => {
+router.get('/getParteDaDescricao/:teste',verificaJWT,async (req, res) => {
     try {
     const abc = req.params.teste;
     const resultados = await modeloTarefa.find({descricao: { $regex: abc }});
@@ -46,7 +46,7 @@ router.get('/getParteDaDescricao/:teste', async (req, res) => {
     }
    })
  
-router.delete('/delete/:id',async (req, res) => {
+router.delete('/delete/:id',verificaJWT,async (req, res) => {
     try {
         const id = req.params.id;
         const resultado = await modeloTarefa.findByIdAndDelete(req.params.id)
@@ -57,7 +57,7 @@ router.delete('/delete/:id',async (req, res) => {
     }
    })
 
-router.delete('/deleteAll',async (req, res) =>{
+router.delete('/deleteAll',verificaJWT,async (req, res) =>{
     try{
         const resultado = await modeloTarefa.deleteMany();
     res.json(resultado)
@@ -67,7 +67,7 @@ router.delete('/deleteAll',async (req, res) =>{
         }
    })
 
-   router.delete('/deleteAllDone',async (req, res) =>{
+   router.delete('/deleteAllDone',verificaJWT,async (req, res) =>{
     try{
         const resultado = await modeloTarefa.deleteMany({statusRealizada: true})
     res.json(resultado)
@@ -77,7 +77,7 @@ router.delete('/deleteAll',async (req, res) =>{
         }
    })
 
-router.patch('/undo', async (req, res) =>{
+router.patch('/undo', verificaJWT, async (req, res) =>{
     try {
         const id = backupid;
         const backupObj = await modeloTarefa.findById(id);
