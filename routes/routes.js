@@ -10,7 +10,7 @@ let backupAll = {
     edit: {}
 }
 
-router.post('/post', verificaJWT,async (req, res) => {
+router.post('/post', async (req, res) => {
     const objetoTarefa = new modeloTarefa({
     descricao: req.body.descricao,
     statusRealizada: req.body.statusRealizada
