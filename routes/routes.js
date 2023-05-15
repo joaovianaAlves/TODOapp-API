@@ -4,6 +4,13 @@ module.exports = router;
 const modeloTarefa = require('../models/tarefa');
 const userModel = require('../models/user')
 
+const backupid = "64262567b6b3a1d705294dac";
+
+let backupAll = {
+    acao: "vazio",
+    edit: {}
+}
+
 router.post('/post', verificaJWT, async (req, res) => {
     const objetoTarefa = new modeloTarefa({
     descricao: req.body.descricao,
@@ -146,24 +153,22 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
    })
    
    //Autenticacao
-   const userModel = require('../models/user');
    var jwt = require('jsonwebtoken');
    router.post('/login', async (req, res) => {
     try {
-    const data = await userModel.findOne({ 'nome': req.body.nome });
+    const data = await userModel.findOne({ 'username': req.body.username });
    
-    if (data != null && data.senha === req.body.senha) {
+    if (data != null && data.password === req.body.password) {
     const token = jwt.sign({ id: req.body.user }, 'segredo',
     { expiresIn: 300 });
-    return res.json({ token: token });
+    return res.json({ token: token , isAdmin: data.isAdmin});
     }
    
     res.status(500).json({ message: 'Login invalido!' });
     } catch (error) {
     res.status(500).json({ message: error.message })
-    }
-   })
-   
+}
+})
 
 router.get('/getAllUsers', verificaJWT, async (req, res) => {
     try {
