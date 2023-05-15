@@ -146,22 +146,24 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
    })
    
    //Autenticacao
+   const userModel = require('../models/user');
    var jwt = require('jsonwebtoken');
    router.post('/login', async (req, res) => {
     try {
-    const data = await userModel.findOne({ 'username': req.body.username });
+    const data = await userModel.findOne({ 'nome': req.body.nome });
    
-    if (data != null && data.password === req.body.password) {
+    if (data != null && data.senha === req.body.senha) {
     const token = jwt.sign({ id: req.body.user }, 'segredo',
     { expiresIn: 300 });
-    return res.json({ token: token , isAdmin: data.isAdmin});
+    return res.json({ token: token });
     }
    
     res.status(500).json({ message: 'Login invalido!' });
     } catch (error) {
     res.status(500).json({ message: error.message })
-}
-})
+    }
+   })
+   
 
 router.get('/getAllUsers', verificaJWT, async (req, res) => {
     try {
