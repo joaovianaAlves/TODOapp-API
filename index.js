@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config()
 
 const express = require('express');
 const app = express();
@@ -22,7 +22,7 @@ app.listen(PORT, () => {
 })
 // Obtendo os parametros passados pela linha de comando
 var userArgs = process.argv.slice(2);
-var mongoURL = process.env.mongoURL;
+var mongoURL = process.env.mongoURL
 //Configurando a conexao com o Banco de Dados
 var mongoose = require('mongoose');
 mongoose.connect(mongoURL, {
@@ -38,4 +38,4 @@ db.once('connected', () => {
  console.log('Database Connected');
 })
 
-module.exports = app;  
+module.exports = app;
