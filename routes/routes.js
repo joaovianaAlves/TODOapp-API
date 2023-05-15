@@ -110,25 +110,75 @@ router.patch('/update/:id',async (req, res) => {
     res.status(400).json({ message: error.message })
     }
    })
+
+   router.post('/postUser', verificaJWT, async (req, res) => {
+    const objetoUser = new userModel({
+    username: req.body.username,
+    password: req.body.password,
+    admLogado: req.body.admLogado
+    })
+    try {
+    const userSalvo = await objetoUser.save();
+    res.status(200).json(userSalvo)
+    }
+    catch (error) {
+    res.status(400).json({ message: error.message })
+    }
+   })
+
+   router.delete('/deleteUser/:id',verificaJWT,async (req, res) => {
+    try {
+        const id = req.params.id;
+        const resultado = await userModel.findByIdAndDelete(req.params.id)
+        res.json(resultado)
+    }
+    catch (error) {
+    res.status(400).json({ message: error.message })
+    }
+   })
+
+   router.patch('/updateUser/:id', verificaJWT, async (req, res) => {
+    try {
+    const id = req.params.id;
+    const novoUser = req.body;
+    const options = { new: true };
+    const result = await userModel.findByIdAndUpdate(
+    id, novoUser, options
+    )
+    res.json(result)
+    }
+    catch (error) {
+    res.status(400).json({ message: error.message })
+    }
+   })
    
+   router.get('/getAllUsers', verificaJWT, async (req, res) => {
+    try {
+        const resultados = await userModel.find();
+        res.json(resultados)
+        }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
    //Autenticacao
-   const userModel = require('../models/user');
    var jwt = require('jsonwebtoken');
    router.post('/login', async (req, res) => {
     try {
-    const data = await userModel.findOne({ 'nome': req.body.nome });
+    const data = await userModel.findOne({ 'username': req.body.username });
    
-    if (data != null && data.senha === req.body.senha) {
+    if (data != null && data.password === req.body.password) {
     const token = jwt.sign({ id: req.body.user }, 'segredo',
     { expiresIn: 300 });
-    return res.json({ token: token });
+    return res.json({ token: token , admLogado: data.admLogado});
     }
    
     res.status(500).json({ message: 'Login invalido!' });
     } catch (error) {
     res.status(500).json({ message: error.message })
-    }
-   })
+}
+})
 
 //Nova forma de Autorizacao
 function verificaJWT(req, res, next) {
