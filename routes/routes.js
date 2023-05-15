@@ -4,13 +4,6 @@ module.exports = router;
 const modeloTarefa = require('../models/tarefa');
 const userModel = require('../models/user')
 
-const backupid = "64262567b6b3a1d705294dac";
-
-let backupAll = {
-    acao: "vazio",
-    edit: {}
-}
-
 router.post('/post', verificaJWT, async (req, res) => {
     const objetoTarefa = new modeloTarefa({
     descricao: req.body.descricao,
