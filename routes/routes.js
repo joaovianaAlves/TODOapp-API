@@ -27,9 +27,9 @@ router.post('/post', verificaJWT, async (req, res) => {
 
 router.post('/postUser', verificaJWT, async (req, res) => {
     const objetoUser = new userModel({
-    username: req.body.username,
-    password: req.body.password,
-    isAdmin: req.body.isAdmin
+    nome: req.body.nome,
+    senha: req.body.senha,
+    admLogado: req.body.admLogado
     })
     try {
     const userSalvo = await objetoUser.save();
@@ -156,12 +156,12 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
    var jwt = require('jsonwebtoken');
    router.post('/login', async (req, res) => {
     try {
-    const data = await userModel.findOne({ 'username': req.body.username });
+    const data = await userModel.findOne({ 'nome': req.body.nome });
    
-    if (data != null && data.password === req.body.password) {
+    if (data != null && data.senha === req.body.senha) {
     const token = jwt.sign({ id: req.body.user }, 'segredo',
     { expiresIn: 300 });
-    return res.json({ token: token , isAdmin: data.isAdmin});
+    return res.json({ token: token , admLogado: data.admLogado});
     }
    
     res.status(500).json({ message: 'Login invalido!' });
