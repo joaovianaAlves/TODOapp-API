@@ -11,6 +11,10 @@ let backupAll = {
     edit: {}
 }
 
+   /***********
+    * Tarefas *
+    ***********/
+
 router.post('/post', verificaJWT, async (req, res) => {
     const objetoTarefa = new modeloTarefa({
     descricao: req.body.descricao,
@@ -19,21 +23,6 @@ router.post('/post', verificaJWT, async (req, res) => {
     try {
     const tarefaSalva = await objetoTarefa.save();
     res.status(200).json(tarefaSalva)
-    }
-    catch (error) {
-    res.status(400).json({ message: error.message })
-    }
-   })
-
-router.post('/postUser', verificaJWT, async (req, res) => {
-    const objetoUser = new userModel({
-    nome: req.body.nome,
-    senha: req.body.senha,
-    admLogado: req.body.admLogado
-    })
-    try {
-    const userSalvo = await objetoUser.save();
-    res.status(200).json(userSalvo)
     }
     catch (error) {
     res.status(400).json({ message: error.message })
@@ -72,17 +61,6 @@ router.delete('/delete/:id',verificaJWT,async (req, res) => {
     }
    })
 
-   router.delete('/deleteUser/:id',verificaJWT,async (req, res) => {
-    try {
-        const id = req.params.id;
-        const resultado = await userModel.findByIdAndDelete(req.params.id)
-        res.json(resultado)
-    }
-    catch (error) {
-    res.status(400).json({ message: error.message })
-    }
-   })
-
 router.delete('/deleteAll',verificaJWT,async (req, res) =>{
     try{
         const resultado = await modeloTarefa.deleteMany();
@@ -102,25 +80,6 @@ router.delete('/deleteAll',verificaJWT,async (req, res) =>{
         res.status(400).json({ message: error.message })
         }
    })
-
-router.patch('/undo', verificaJWT, async (req, res) =>{
-    try {
-        const id = backupid;
-        const backupObj = await modeloTarefa.findById(id);
-        const desc = backupObj.descricao;
-        const status = backupObj.statusRealizada
-        const newObj = new modeloTarefa({
-            descricao: desc,
-            statusRealizada : status
-        })
-        const backup = await modeloTarefa.findByIdAndUpdate(backupid, {descricao: 'BACKUP'}, {statusRealizada: false})
-        const result = await newObj.save()
-        res.json(result)
-        }
-        catch (error) {
-        res.status(400).json({ message: error.message })
-        }
-})
    
 router.patch('/update/:id', verificaJWT, async (req, res) => {
     try {
@@ -137,6 +96,22 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
     }
    })
 
+   /***********
+    *  Admin  *
+    ***********/
+
+   router.delete('/deleteUser/:id',verificaJWT,async (req, res) => {
+    try {
+        const id = req.params.id;
+        const resultado = await userModel.findByIdAndDelete(req.params.id)
+        res.json(resultado)
+    }
+    catch (error) {
+    res.status(400).json({ message: error.message })
+    }
+   })
+
+
    router.patch('/updateUser/:id', verificaJWT, async (req, res) => {
     try {
     const id = req.params.id;
@@ -151,6 +126,33 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
     res.status(400).json({ message: error.message })
     }
    })
+
+   router.post('/postUser', verificaJWT, async (req, res) => {
+    const objetoUser = new userModel({
+    nome: req.body.nome,
+    senha: req.body.senha,
+    admLogado: req.body.admLogado
+    })
+    try {
+    const userSalvo = await objetoUser.save();
+    res.status(200).json(userSalvo)
+    }
+    catch (error) {
+    res.status(400).json({ message: error.message })
+    }
+   })
+
+   router.get('/getAllUsers', verificaJWT, async (req, res) => {
+    try {
+        const resultados = await userModel.find();
+        res.json(resultados)
+        }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+
    
    //Autenticacao
    var jwt = require('jsonwebtoken');
@@ -170,15 +172,7 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
 }
 })
 
-router.get('/getAllUsers', verificaJWT, async (req, res) => {
-    try {
-        const resultados = await userModel.find();
-        res.json(resultados)
-        }
-    catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-})
+
 
 //Nova forma de Autorizacao
 function verificaJWT(req, res, next) {
