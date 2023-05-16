@@ -153,6 +153,10 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
 })
 
 
+    /****************
+    *  Requisicoes  *
+    *****************/
+
    
    //Autenticacao
    var jwt = require('jsonwebtoken');
