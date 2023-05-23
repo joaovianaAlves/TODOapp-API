@@ -4,15 +4,12 @@ var userSchema = new mongoose.Schema({
     unique: true,
     type: String
  },
-    hash: {
-    type: String
-    },
-    salt: {
-    type: String
-    },
+
  admLogado: {
 type: Boolean
 },
+    hash: String,
+    salt: String
 },
  {
  versionKey: false
