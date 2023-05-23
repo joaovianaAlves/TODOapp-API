@@ -130,7 +130,8 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
    router.post('/postUser', verificaJWT, async (req, res) => {
     const objetoUser = new userModel({
     nome: req.body.nome,
-    senha: req.body.senha,
+    hash: generateHash(senha, saltBD),
+    salt:"$AB%G6",
     admLogado: req.body.admLogado
     })
     try {
@@ -195,3 +196,8 @@ function validPassword (senha, hashBD, saltBD) {
 hashCalculado=createHash('sha256').update(senha+saltBD).digest('hex');
 return hashCalculado === hashBD;
 };
+
+function generateHash(senha, saltBD){
+    const hashCalculado=createHash('sha256').update(senha+saltBD).digest('hex');
+    return hashCalculado;
+}
