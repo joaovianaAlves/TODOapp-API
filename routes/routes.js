@@ -164,7 +164,7 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
     try {
     const data = await userModel.findOne({ 'nome': req.body.nome });
    
-    if (data != null && data.senha === req.body.senha) {
+    if (data!=null && validPassword(req.body.senha, data.hash, data.salt)) {
     const token = jwt.sign({ id: req.body.user }, 'segredo',
     { expiresIn: 300 });
     return res.json({ token: token , admLogado: data.admLogado});
@@ -189,3 +189,9 @@ function verificaJWT(req, res, next) {
     next();
     });
    }
+
+   var { createHash } = require('crypto');
+function validPassword (senha, hashBD, saltBD) {
+hashCalculado=createHash('sha256').update(senha+saltBD).digest('hex');
+return hashCalculado === hashBD;
+};
