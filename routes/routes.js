@@ -130,7 +130,7 @@ router.patch('/update/:id', verificaJWT, async (req, res) => {
    router.post('/postUser', verificaJWT, async (req, res) => {
     const objetoUser = new userModel({
     nome: req.body.nome,
-    hash: generateHash(senha, saltBD),
+    hash: generateHash(req.body.senha, "$AB%G6"),
     salt:"$AB%G6",
     admLogado: req.body.admLogado
     })
